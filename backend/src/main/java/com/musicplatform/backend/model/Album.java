@@ -11,97 +11,44 @@ public class Album {
     @Id
     private String id;
     private String title;
-    private Date veröffentlichungsDatum;
-    private String beschreibung;
-    private String coverbild;
-    private int gesamtdauer;
-    private String artistId;
-    private List<String> songIds = new ArrayList<>();
-    private Date erstellungsDatum;
+    private Date releaseDate;
+    private String description;
+    private String coverImage;
+    private int totalDuration;
+    private List<String> artistIds = new ArrayList<>();
+    private List<Song> songs = new ArrayList<>();
 
     public Album() {}
 
-    public Album(String title, Date veröffentlichungsDatum, String beschreibung,
-                 String coverbild, String artistId) {
+    public Album(String title, Date releaseDate, String description, String coverImage) {
         this.title = title;
-        this.veröffentlichungsDatum = veröffentlichungsDatum;
-        this.beschreibung = beschreibung;
-        this.coverbild = coverbild;
-        this.artistId = artistId;
-        this.gesamtdauer = 0;
-        this.erstellungsDatum = new Date();
+        this.releaseDate = releaseDate;
+        this.description = description;
+        this.coverImage = coverImage;
+        this.totalDuration = 0;
     }
 
-    // Getter und Setter
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getTitle() {
-        return title;
-    }
+    public Date getReleaseDate() { return releaseDate; }
+    public void setReleaseDate(Date releaseDate) { this.releaseDate = releaseDate; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public Date getVeröffentlichungsDatum() {
-        return veröffentlichungsDatum;
-    }
+    public String getCoverImage() { return coverImage; }
+    public void setCoverImage(String coverImage) { this.coverImage = coverImage; }
 
-    public void setVeröffentlichungsDatum(Date veröffentlichungsDatum) {
-        this.veröffentlichungsDatum = veröffentlichungsDatum;
-    }
+    public int getTotalDuration() { return totalDuration; }
+    public void setTotalDuration(int totalDuration) { this.totalDuration = totalDuration; }
 
-    public String getBeschreibung() {
-        return beschreibung;
-    }
+    public List<String> getArtistIds() { return artistIds; }
+    public void setArtistIds(List<String> artistIds) { this.artistIds = artistIds; }
 
-    public void setBeschreibung(String beschreibung) {
-        this.beschreibung = beschreibung;
-    }
-
-    public String getCoverbild() {
-        return coverbild;
-    }
-
-    public void setCoverbild(String coverbild) {
-        this.coverbild = coverbild;
-    }
-
-    public int getGesamtdauer() {
-        return gesamtdauer;
-    }
-
-    public void setGesamtdauer(int gesamtdauer) {
-        this.gesamtdauer = gesamtdauer;
-    }
-
-    public String getArtistId() {
-        return artistId;
-    }
-
-    public void setArtistId(String artistId) {
-        this.artistId = artistId;
-    }
-
-    public List<String> getSongIds() {
-        return songIds;
-    }
-
-    public void setSongIds(List<String> songIds) {
-        this.songIds = songIds;
-    }
-
-    public Date getErstellungsDatum() {
-        return erstellungsDatum;
-    }
-
-    public void setErstellungsDatum(Date erstellungsDatum) {
-        this.erstellungsDatum = erstellungsDatum;
-    }
+    public List<Song> getSongs() { return songs; }
+    public void setSongs(List<Song> songs) { this.songs = songs; }
 }

@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface AlbumRepository extends MongoRepository<Album, String> {
     Optional<Album> findByTitle(String title);
-    List<Album> findByArtistId(String artistId);
-    List<Album> findAll();
+    List<Album> findByArtistIdsContaining(String artistId);
 }

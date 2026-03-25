@@ -37,31 +37,31 @@ public class PlaylistService {
         if (existingPlaylist.isPresent()) {
             Playlist playlist = existingPlaylist.get();
             if (updatedPlaylist.getName() != null) playlist.setName(updatedPlaylist.getName());
-            if (updatedPlaylist.getBeschreibung() != null) playlist.setBeschreibung(updatedPlaylist.getBeschreibung());
+            if (updatedPlaylist.getDescription() != null) playlist.setDescription(updatedPlaylist.getDescription());
             if (updatedPlaylist.getTags() != null && !updatedPlaylist.getTags().isEmpty()) playlist.setTags(updatedPlaylist.getTags());
-            if (updatedPlaylist.getCoverbild() != null) playlist.setCoverbild(updatedPlaylist.getCoverbild());
+            if (updatedPlaylist.getCoverImage() != null) playlist.setCoverImage(updatedPlaylist.getCoverImage());
             return playlistRepository.save(playlist);
         }
         return null;
     }
 
-    public Playlist addSongToPlaylist(String playlistId, String songId) {
+    public Playlist addSongToPlaylist(String playlistId, String songTitle) {
         Optional<Playlist> playlist = playlistRepository.findById(playlistId);
         if (playlist.isPresent()) {
             Playlist p = playlist.get();
-            if (!p.getSongIds().contains(songId)) {
-                p.getSongIds().add(songId);
+            if (!p.getSongIds().contains(songTitle)) {
+                p.getSongIds().add(songTitle);
             }
             return playlistRepository.save(p);
         }
         return null;
     }
 
-    public Playlist removeSongFromPlaylist(String playlistId, String songId) {
+    public Playlist removeSongFromPlaylist(String playlistId, String songTitle) {
         Optional<Playlist> playlist = playlistRepository.findById(playlistId);
         if (playlist.isPresent()) {
             Playlist p = playlist.get();
-            p.getSongIds().remove(songId);
+            p.getSongIds().remove(songTitle);
             return playlistRepository.save(p);
         }
         return null;

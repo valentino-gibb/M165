@@ -32,8 +32,8 @@ public class ArtistService {
         return artistRepository.findByLabel(label);
     }
 
-    public List<Artist> getArtistsByHerkunftsland(String herkunftsland) {
-        return artistRepository.findByHerkunftsland(herkunftsland);
+    public List<Artist> getArtistsByCountry(String country) {
+        return artistRepository.findByCountry(country);
     }
 
     public Artist updateArtist(String id, Artist updatedArtist) {
@@ -41,9 +41,9 @@ public class ArtistService {
         if (existingArtist.isPresent()) {
             Artist artist = existingArtist.get();
             if (updatedArtist.getName() != null) artist.setName(updatedArtist.getName());
-            if (updatedArtist.getHerkunftsland() != null) artist.setHerkunftsland(updatedArtist.getHerkunftsland());
-            if (updatedArtist.getDebütJahr() != 0) artist.setDebütJahr(updatedArtist.getDebütJahr());
-            if (updatedArtist.getBiografie() != null) artist.setBiografie(updatedArtist.getBiografie());
+            if (updatedArtist.getCountry() != null) artist.setCountry(updatedArtist.getCountry());
+            if (updatedArtist.getDebutYear() != 0) artist.setDebutYear(updatedArtist.getDebutYear());
+            if (updatedArtist.getBiography() != null) artist.setBiography(updatedArtist.getBiography());
             if (updatedArtist.getLabel() != null) artist.setLabel(updatedArtist.getLabel());
             return artistRepository.save(artist);
         }

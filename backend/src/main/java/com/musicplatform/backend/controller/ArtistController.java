@@ -46,7 +46,7 @@ public class ArtistController {
 
     @GetMapping("/country/{country}")
     public ResponseEntity<List<Artist>> getArtistsByCountry(@PathVariable String country) {
-        return ResponseEntity.ok(artistService.getArtistsByHerkunftsland(country));
+        return ResponseEntity.ok(artistService.getArtistsByCountry(country));
     }
 
     @PutMapping("/{id}")

@@ -1,115 +1,52 @@
 package com.musicplatform.backend.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
-@Document(collection = "songs")
 public class Song {
-    @Id
-    private String id;
     private String title;
-    private int dauer;
+    private int duration;
     private String genre;
-    private Date veröffentlichungsDatum;
-    private boolean explizit;
-    private long anzahlStreams;
+    private Date releaseDate;
+    private boolean explicit;
+    private long streamCount;
     private String lyrics;
-    private String sprache;
-    private String albumId;
+    private String language;
 
     public Song() {}
 
-    public Song(String title, int dauer, String genre, Date veröffentlichungsDatum,
-                boolean explizit, String lyrics, String sprache) {
+    public Song(String title, int duration, String genre, Date releaseDate,
+                boolean explicit, String lyrics, String language) {
         this.title = title;
-        this.dauer = dauer;
+        this.duration = duration;
         this.genre = genre;
-        this.veröffentlichungsDatum = veröffentlichungsDatum;
-        this.explizit = explizit;
+        this.releaseDate = releaseDate;
+        this.explicit = explicit;
         this.lyrics = lyrics;
-        this.sprache = sprache;
-        this.anzahlStreams = 0;
+        this.language = language;
+        this.streamCount = 0;
     }
 
-    // Getter und Setter
-    public String getId() {
-        return id;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public int getDuration() { return duration; }
+    public void setDuration(int duration) { this.duration = duration; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public Date getReleaseDate() { return releaseDate; }
+    public void setReleaseDate(Date releaseDate) { this.releaseDate = releaseDate; }
 
-    public int getDauer() {
-        return dauer;
-    }
+    public boolean isExplicit() { return explicit; }
+    public void setExplicit(boolean explicit) { this.explicit = explicit; }
 
-    public void setDauer(int dauer) {
-        this.dauer = dauer;
-    }
+    public long getStreamCount() { return streamCount; }
+    public void setStreamCount(long streamCount) { this.streamCount = streamCount; }
 
-    public String getGenre() {
-        return genre;
-    }
+    public String getLyrics() { return lyrics; }
+    public void setLyrics(String lyrics) { this.lyrics = lyrics; }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public Date getVeröffentlichungsDatum() {
-        return veröffentlichungsDatum;
-    }
-
-    public void setVeröffentlichungsDatum(Date veröffentlichungsDatum) {
-        this.veröffentlichungsDatum = veröffentlichungsDatum;
-    }
-
-    public boolean isExplizit() {
-        return explizit;
-    }
-
-    public void setExplizit(boolean explizit) {
-        this.explizit = explizit;
-    }
-
-    public long getAnzahlStreams() {
-        return anzahlStreams;
-    }
-
-    public void setAnzahlStreams(long anzahlStreams) {
-        this.anzahlStreams = anzahlStreams;
-    }
-
-    public String getLyrics() {
-        return lyrics;
-    }
-
-    public void setLyrics(String lyrics) {
-        this.lyrics = lyrics;
-    }
-
-    public String getSprache() {
-        return sprache;
-    }
-
-    public void setSprache(String sprache) {
-        this.sprache = sprache;
-    }
-
-    public String getAlbumId() {
-        return albumId;
-    }
-
-    public void setAlbumId(String albumId) {
-        this.albumId = albumId;
-    }
+    public String getLanguage() { return language; }
+    public void setLanguage(String language) { this.language = language; }
 }

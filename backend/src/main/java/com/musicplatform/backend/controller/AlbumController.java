@@ -1,6 +1,7 @@
 package com.musicplatform.backend.controller;
 
 import com.musicplatform.backend.model.Album;
+import com.musicplatform.backend.model.Song;
 import com.musicplatform.backend.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,18 +54,19 @@ public class AlbumController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{albumId}/songs/{songId}")
-    public ResponseEntity<Album> addSongToAlbum(@PathVariable String albumId, @PathVariable String songId) {
-        Album album = albumService.addSongToAlbum(albumId, songId);
+    // Songs are now embedded documents - add/remove via Song object
+    @PostMapping("/{albumId}/songs")
+    public ResponseEntity<Album> addSongToAlbum(@PathVariable String albumId, @RequestBody Song song) {
+        Album album = albumService.addSongToAlbum(albumId, song);
         if (album != null) {
             return ResponseEntity.ok(album);
         }
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{albumId}/songs/{songId}")
-    public ResponseEntity<Album> removeSongFromAlbum(@PathVariable String albumId, @PathVariable String songId) {
-        Album album = albumService.removeSongFromAlbum(albumId, songId);
+    @DeleteMapping("/{albumId}/songs/{songTitle}")
+    public ResponseEntity<Album> removeSongFromAlbum(@PathVariable String albumId, @PathVariable String songTitle) {
+        Album album = albumService.removeSongFromAlbum(albumId, songTitle);
         if (album != null) {
             return ResponseEntity.ok(album);
         }

@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ArtistRepository extends MongoRepository<Artist, String> {
     Optional<Artist> findByName(String name);
     List<Artist> findByLabel(String label);
-    List<Artist> findByHerkunftsland(String herkunftsland);
+    List<Artist> findByCountry(String country);
 }

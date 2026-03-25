@@ -20,8 +20,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> getUserByBenutzername(String benutzername) {
-        return userRepository.findByBenutzername(benutzername);
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public Optional<User> getUserByEmail(String email) {
@@ -36,11 +36,11 @@ public class UserService {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            if (updatedUser.getBenutzername() != null) user.setBenutzername(updatedUser.getBenutzername());
+            if (updatedUser.getUsername() != null) user.setUsername(updatedUser.getUsername());
             if (updatedUser.getEmail() != null) user.setEmail(updatedUser.getEmail());
-            if (updatedUser.getPassword() != null) user.setPassword(updatedUser.getPassword());
-            if (updatedUser.getLand() != null) user.setLand(updatedUser.getLand());
-            if (updatedUser.getProfilbild() != null) user.setProfilbild(updatedUser.getProfilbild());
+            if (updatedUser.getPasswordHash() != null) user.setPasswordHash(updatedUser.getPasswordHash());
+            if (updatedUser.getCountry() != null) user.setCountry(updatedUser.getCountry());
+            if (updatedUser.getProfilePicture() != null) user.setProfilePicture(updatedUser.getProfilePicture());
             return userRepository.save(user);
         }
         return null;
