@@ -39,7 +39,7 @@ function formatDuration(secs) {
   <div>
     <div class="page-header">
       <h1>Alben</h1>
-      <p>{{ albums.length }} Alben in der Datenbank</p>
+      <p>{{ albums.length }} verfügbare Alben</p>
     </div>
 
     <div class="toolbar">

@@ -7,9 +7,17 @@ const userMap  = ref({})   // userId → user
 const search   = ref('')
 const loading  = ref(true)
 
+const albumCountMap = ref({})  // artistId → count
+
 onMounted(async () => {
-  const [a, users] = await Promise.all([api.getArtists(), api.getUsers()])
+  const [a, users, albums] = await Promise.all([api.getArtists(), api.getUsers(), api.getAlbums()])
   userMap.value = Object.fromEntries(users.map(u => [u.id, u]))
+  // count albums per artist via artistIds[]
+  const counts = {}
+  albums.forEach(al => {
+    al.artistIds?.forEach(aid => { counts[aid] = (counts[aid] || 0) + 1 })
+  })
+  albumCountMap.value = counts
   artists.value = a
   loading.value = false
 })
@@ -32,7 +40,7 @@ const filtered = computed(() =>
   <div>
     <div class="page-header">
       <h1>Artists</h1>
-      <p>{{ artists.length }} Artists in der Datenbank</p>
+      <p>{{ artists.length }} aktuelle Artists</p>
     </div>
 
     <div class="toolbar">
@@ -68,7 +76,7 @@ const filtered = computed(() =>
         <div class="artist-label">{{ artist.label }}</div>
         <p class="artist-bio">{{ artist.biography }}</p>
         <div class="artist-footer">
-          <span class="tag">{{ artist.albumIds?.length || 0 }} Alben</span>
+          <span class="tag">{{ albumCountMap[artist.id] || 0 }} Alben</span>
         </div>
       </div>
     </div>

@@ -93,7 +93,7 @@ async function savePlaylist() {
   <div>
     <div class="page-header">
       <h1>Playlists</h1>
-      <p>{{ playlists.length }} Playlists in der Datenbank</p>
+      <p>{{ playlists.length }} erstellte Playlists</p>
     </div>
 
     <div class="toolbar">
