@@ -1,9 +1,19 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { api } from '../api.js'
 import { useAuth } from '../stores/auth.js'
 
 const { state, setUser, setArtist } = useAuth()
+
+const allAlbums = ref([])
+onMounted(async () => {
+  allAlbums.value = await api.getAlbums()
+})
+const artistAlbumCount = computed(() =>
+  state.artist
+    ? allAlbums.value.filter(a => a.artistIds?.includes(state.artist.id)).length
+    : 0
+)
 
 // ── Profile edit ──────────────────────────────────────────────
 const profile = reactive({
@@ -158,7 +168,7 @@ async function becomeArtist() {
         </div>
         <div class="ao-row">
           <span class="ao-key">Alben</span>
-          <span class="ao-val">{{ state.artist.albumIds?.length || 0 }}</span>
+          <span class="ao-val">{{ artistAlbumCount }}</span>
         </div>
       </div>
       <RouterLink to="/app/studio" class="btn btn-primary" style="margin-top: 16px; display: inline-flex">
