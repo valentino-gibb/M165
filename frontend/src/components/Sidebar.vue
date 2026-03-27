@@ -108,7 +108,8 @@ function handleLogout() {
       </RouterLink>
 
       <div class="user-chip" v-if="state.user">
-        <img :src="state.user.profilePicture" :alt="state.user.username" class="avatar" />
+        <img v-if="state.user.profilePicture" :src="state.user.profilePicture" :alt="state.user.username" class="avatar" />
+        <div v-else class="avatar avatar-letter">{{ state.user.username?.[0]?.toUpperCase() }}</div>
         <div class="user-info">
           <span class="user-name">{{ state.user.username }}</span>
           <span class="user-role">{{ state.artist ? 'Artist' : 'Nutzer' }}</span>
@@ -201,6 +202,15 @@ function handleLogout() {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+}
+.avatar-letter {
+  background: var(--accent-dim);
+  color: #a78bfa;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-info {

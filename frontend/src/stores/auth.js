@@ -32,6 +32,22 @@ export function useAuth() {
     localStorage.setItem('currentArtist', JSON.stringify(artist))
   }
 
+  async function refreshUser() {
+    if (!state.user?.id) return
+    try {
+      const fresh = await api.getUserById(state.user.id)
+      state.user = fresh
+      localStorage.setItem('currentUser', JSON.stringify(fresh))
+      if (fresh.artistId) {
+        const artist = await api.getArtistById(fresh.artistId)
+        state.artist = artist
+        localStorage.setItem('currentArtist', JSON.stringify(artist))
+      }
+    } catch (e) {
+      // ignore network errors on refresh
+    }
+  }
+
   function logout() {
     state.user   = null
     state.artist = null
@@ -39,5 +55,5 @@ export function useAuth() {
     localStorage.removeItem('currentArtist')
   }
 
-  return { state, login, setUser, setArtist, logout }
+  return { state, login, setUser, setArtist, refreshUser, logout }
 }

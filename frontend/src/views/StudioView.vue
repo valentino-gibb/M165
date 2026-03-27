@@ -18,6 +18,7 @@ const showModal  = ref(false)
 const saving     = ref(false)
 const saveMsg    = ref('')
 const saveError  = ref('')
+const editingId  = ref(null)
 
 const myAlbums = computed(() =>
   allAlbums.value.filter(a => a.artistIds?.includes(state.artist?.id))
@@ -70,6 +71,13 @@ function parseDuration(val) {
   return parseInt(val) || 0
 }
 
+function secsToMmSs(secs) {
+  if (!secs) return ''
+  const m = Math.floor(secs / 60)
+  const s = secs % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
 async function saveAlbum() {
   if (!form.value.title.trim()) { saveError.value = 'Titel ist Pflichtfeld.'; return }
   saveMsg.value   = ''
@@ -79,22 +87,25 @@ async function saveAlbum() {
   const payload = {
     ...form.value,
     totalDuration: form.value.songs.reduce((s, song) => s + parseDuration(song.duration), 0),
-    songs: form.value.songs.map(s => ({
-      ...s,
-      duration: parseDuration(s.duration),
-    })),
+    songs: form.value.songs.map(s => ({ ...s, duration: parseDuration(s.duration) })),
   }
 
   try {
-    const album = await api.createAlbum(payload)
-    // Update artist albumIds
-    const updatedArtist = await api.updateArtist(state.artist.id, {
-      ...state.artist,
-      albumIds: [...(state.artist.albumIds || []), album.id],
-    })
-    setArtist(updatedArtist)
-    allAlbums.value.push(album)
-    saveMsg.value = 'Album veröffentlicht!'
+    if (editingId.value) {
+      const updated = await api.updateAlbum(editingId.value, { ...payload, id: editingId.value })
+      const idx = allAlbums.value.findIndex(a => a.id === editingId.value)
+      allAlbums.value.splice(idx, 1, updated)
+      saveMsg.value = 'Album gespeichert!'
+    } else {
+      const album = await api.createAlbum(payload)
+      const updatedArtist = await api.updateArtist(state.artist.id, {
+        ...state.artist,
+        albumIds: [...(state.artist.albumIds || []), album.id],
+      })
+      setArtist(updatedArtist)
+      allAlbums.value.push(album)
+      saveMsg.value = 'Album veröffentlicht!'
+    }
     setTimeout(() => {
       showModal.value = false
       form.value      = emptyAlbum()
@@ -107,8 +118,25 @@ async function saveAlbum() {
   }
 }
 
-function openModal() {
-  form.value      = emptyAlbum()
+async function deleteAlbum(album) {
+  if (!confirm(`Album "${album.title}" wirklich löschen?`)) return
+  await api.deleteAlbum(album.id)
+  allAlbums.value = allAlbums.value.filter(a => a.id !== album.id)
+  const updatedArtist = await api.updateArtist(state.artist.id, {
+    ...state.artist, albumIds: (state.artist.albumIds || []).filter(id => id !== album.id),
+  })
+  setArtist(updatedArtist)
+}
+
+function openModal(album = null) {
+  editingId.value = album?.id ?? null
+  form.value = album
+    ? {
+        ...album,
+        releaseDate: album.releaseDate?.slice(0, 10) ?? new Date().toISOString().slice(0, 10),
+        songs: (album.songs || []).map(s => ({ ...s, duration: secsToMmSs(s.duration) })),
+      }
+    : emptyAlbum()
   saveMsg.value   = ''
   saveError.value = ''
   showModal.value = true
@@ -127,7 +155,7 @@ function formatDate(d) {
     </div>
 
     <div class="studio-toolbar">
-      <button class="btn btn-primary" @click="openModal">+ Neues Album</button>
+      <button class="btn btn-primary" @click="openModal()">+ Neues Album</button>
     </div>
 
     <!-- My albums -->
@@ -144,6 +172,17 @@ function formatDate(d) {
       <div v-for="album in myAlbums" :key="album.id" class="my-album-card">
         <div class="my-cover">
           <CoverImage :src="album.coverImage" :title="album.title" />
+          <button class="edit-btn" @click="openModal(album)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="del-btn" @click="deleteAlbum(album)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+            </svg>
+          </button>
         </div>
         <div class="my-info">
           <div class="my-title">{{ album.title }}</div>
@@ -156,7 +195,7 @@ function formatDate(d) {
     <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
       <div class="modal">
         <div class="modal-header">
-          <h2>Neues Album erstellen</h2>
+          <h2>{{ editingId ? 'Album bearbeiten' : 'Neues Album erstellen' }}</h2>
           <button class="modal-close" @click="showModal = false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
@@ -240,7 +279,7 @@ function formatDate(d) {
         <div class="modal-actions">
           <button class="btn btn-ghost" @click="showModal = false">Abbrechen</button>
           <button class="btn btn-primary" @click="saveAlbum" :disabled="saving">
-            {{ saving ? 'Veröffentlichen…' : 'Album veröffentlichen' }}
+            {{ saving ? (editingId ? 'Speichern…' : 'Veröffentlichen…') : (editingId ? 'Speichern' : 'Album veröffentlichen') }}
           </button>
         </div>
       </div>
@@ -266,7 +305,40 @@ function formatDate(d) {
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
+  position: relative;
 }
+.edit-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.edit-btn svg { width: 14px; height: 14px; }
+.my-album-card:hover .edit-btn { opacity: 1; }
+.edit-btn:hover { background: var(--accent); }
+.del-btn {
+  position: absolute;
+  top: 8px; right: 44px;
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.del-btn svg { width: 14px; height: 14px; }
+.my-album-card:hover .del-btn { opacity: 1; }
+.del-btn:hover { background: var(--danger); }
 .my-info { padding: 12px; }
 .my-title { font-size: 13px; font-weight: 600; }
 .my-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }

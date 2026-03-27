@@ -1,5 +1,10 @@
 <script setup>
+import { onMounted } from 'vue'
 import Sidebar from '../components/Sidebar.vue'
+import { useAuth } from '../stores/auth.js'
+
+const { refreshUser } = useAuth()
+onMounted(() => refreshUser())
 </script>
 
 <template>

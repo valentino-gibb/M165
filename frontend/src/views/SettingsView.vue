@@ -89,7 +89,8 @@ async function becomeArtist() {
       <div class="divider"></div>
 
       <div class="avatar-row">
-        <img :src="profile.profilePicture || 'https://i.pravatar.cc/80'" class="big-avatar" alt="Avatar" />
+        <img v-if="profile.profilePicture" :src="profile.profilePicture" class="big-avatar" alt="Avatar" />
+        <div v-else class="big-avatar avatar-letter">{{ state.user?.username?.[0]?.toUpperCase() }}</div>
         <div>
           <div class="avatar-name">{{ state.user?.username }}</div>
           <div class="avatar-role">
@@ -239,6 +240,16 @@ async function becomeArtist() {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.avatar-letter {
+  background: var(--accent-dim);
+  color: #a78bfa;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .avatar-name { font-size: 16px; font-weight: 600; }
 .avatar-role { margin-top: 4px; }

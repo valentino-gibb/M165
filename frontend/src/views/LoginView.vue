@@ -51,7 +51,7 @@ async function handleSignup() {
       username:       signupForm.username.trim(),
       email:          signupForm.email.trim(),
       country:        signupForm.country.trim() || 'Unknown',
-      profilePicture: signupForm.profilePicture.trim() || `https://i.pravatar.cc/150?u=${signupForm.username}`,
+      profilePicture: signupForm.profilePicture.trim() || '',
       passwordHash:   signupForm.passwordHash || 'hashed_pw',
       playlistIds:    [],
       artistId:       null,
@@ -100,7 +100,7 @@ function switchMode(m) {
         <form @submit.prevent="handleLogin" class="auth-form">
           <div class="form-group">
             <label class="label">Benutzername</label>
-            <input v-model="loginForm.username" class="input" placeholder="z.B. kanye_west" autofocus />
+            <input v-model="loginForm.username" class="input" placeholder="Benutzername" autofocus />
           </div>
           <div class="form-group">
             <label class="label">Passwort</label>
