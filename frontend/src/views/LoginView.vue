@@ -12,17 +12,19 @@ const error   = ref('')
 const loading = ref(false)
 
 // ── Login ──────────────────────────────────────────────────────
-const loginForm = reactive({ username: '' })
+const loginForm = reactive({ username: '', password: '' })
 
 async function handleLogin() {
-  if (!loginForm.username.trim()) return
+  if (!loginForm.username.trim() || !loginForm.password) return
   error.value   = ''
   loading.value = true
   try {
-    await login(loginForm.username.trim())
+    await login(loginForm.username.trim(), loginForm.password)
     router.push('/app/home')
-  } catch {
-    error.value = 'Benutzername nicht gefunden.'
+  } catch (e) {
+    error.value = e.message === 'Wrong password'
+      ? 'Falsches Passwort.'
+      : 'Benutzername nicht gefunden.'
   } finally {
     loading.value = false
   }
@@ -78,7 +80,11 @@ function switchMode(m) {
 
     <div class="login-card">
       <div class="login-logo">
-        <span class="logo-icon">♪</span>
+        <span class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+          </svg>
+        </span>
         <span class="logo-name">MusicDB</span>
       </div>
 
@@ -96,8 +102,12 @@ function switchMode(m) {
             <label class="label">Benutzername</label>
             <input v-model="loginForm.username" class="input" placeholder="z.B. kanye_west" autofocus />
           </div>
+          <div class="form-group">
+            <label class="label">Passwort</label>
+            <input v-model="loginForm.password" class="input" type="password" placeholder="••••••••" />
+          </div>
           <p v-if="error" class="error-msg">{{ error }}</p>
-          <button type="submit" class="btn btn-primary full-btn" :disabled="loading || !loginForm.username.trim()">
+          <button type="submit" class="btn btn-primary full-btn" :disabled="loading || !loginForm.username.trim() || !loginForm.password">
             {{ loading ? 'Laden…' : 'Anmelden →' }}
           </button>
         </form>
@@ -174,7 +184,7 @@ function switchMode(m) {
   gap: 8px;
   margin-bottom: 24px;
 }
-.logo-icon { font-size: 24px; color: var(--accent); }
+.logo-icon { width: 24px; height: 24px; color: var(--accent); display: flex; align-items: center; }
 .logo-name  { font-size: 18px; font-weight: 700; }
 
 .tabs {

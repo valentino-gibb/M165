@@ -7,10 +7,11 @@ const state = reactive({
 })
 
 export function useAuth() {
-  async function login(username) {
+  async function login(username, password) {
     const users = await api.getUsers()
     const user = users.find(u => u.username === username)
     if (!user) throw new Error('User not found')
+    if (user.passwordHash !== password) throw new Error('Wrong password')
     state.user = user
     localStorage.setItem('currentUser', JSON.stringify(user))
     if (user.artistId) {

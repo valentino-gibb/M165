@@ -28,13 +28,22 @@ const filtered = computed(() =>
     </div>
 
     <div class="toolbar">
-      <input v-model="search" class="input search" placeholder="🔍  Artist, Label, Land suchen…" />
+      <input v-model="search" class="input search" placeholder="Artist, Label, Land suchen…" />
     </div>
 
-    <div v-if="loading" class="empty"><div class="empty-icon">⏳</div><p>Laden…</p></div>
+    <div v-if="loading" class="empty">
+      <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M12 2a10 10 0 1 0 10 10" />
+      </svg>
+      <p>Laden…</p>
+    </div>
 
     <div v-else-if="!filtered.length" class="empty">
-      <div class="empty-icon">🔍</div>
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
       <p>Keine Artists gefunden</p>
     </div>
 

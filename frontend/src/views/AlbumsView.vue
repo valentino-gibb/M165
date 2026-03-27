@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { api } from '../api.js'
+import CoverImage from '../components/CoverImage.vue'
 
 const albums   = ref([])
 const search   = ref('')
@@ -42,19 +43,31 @@ function formatDuration(secs) {
     </div>
 
     <div class="toolbar">
-      <input v-model="search" class="input search" placeholder="🔍  Album suchen…" />
+      <input v-model="search" class="input search" placeholder="Album suchen…" />
     </div>
 
-    <div v-if="loading" class="empty"><div class="empty-icon">⏳</div><p>Laden…</p></div>
+    <div v-if="loading" class="empty">
+      <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M12 2a10 10 0 1 0 10 10" />
+      </svg>
+      <p>Laden…</p>
+    </div>
 
     <div v-else-if="!filtered.length" class="empty">
-      <div class="empty-icon">💿</div><p>Keine Alben gefunden</p>
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+      <p>Keine Alben gefunden</p>
     </div>
 
     <div v-else class="album-list">
       <div v-for="album in filtered" :key="album.id" class="album-row">
         <div class="album-main" @click="toggleExpand(album.id)">
-          <img :src="album.coverImage" :alt="album.title" class="cover" />
+          <div class="cover">
+            <CoverImage :src="album.coverImage" :title="album.title" />
+          </div>
           <div class="album-info">
             <div class="album-title">{{ album.title }}</div>
             <div class="album-desc">{{ album.description }}</div>
@@ -113,7 +126,7 @@ function formatDuration(secs) {
 .cover {
   width: 56px; height: 56px;
   border-radius: 8px;
-  object-fit: cover;
+  overflow: hidden;
   flex-shrink: 0;
 }
 

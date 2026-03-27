@@ -56,7 +56,7 @@ async function becomeArtist() {
     const updated = await api.updateUser(state.user.id, { ...state.user, artistId: artist.id })
     setArtist(artist)
     setUser(updated)
-    upgradeMsg.value = 'Dein Account wurde zum Artist-Account aufgewertet! 🎤'
+    upgradeMsg.value = 'Dein Account wurde zum Artist-Account aufgewertet!'
   } catch {
     upgradeError.value = 'Fehler beim Aufwerten.'
   } finally {
@@ -75,7 +75,11 @@ async function becomeArtist() {
     <!-- Profile section -->
     <div class="settings-section card">
       <div class="section-head">
-        <div class="section-icon">👤</div>
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
         <div>
           <h2>Mein Profil</h2>
           <p class="section-sub">Persönliche Daten bearbeiten</p>
@@ -89,7 +93,7 @@ async function becomeArtist() {
         <div>
           <div class="avatar-name">{{ state.user?.username }}</div>
           <div class="avatar-role">
-            <span v-if="state.artist" class="artist-badge">🎤 Artist</span>
+            <span v-if="state.artist" class="artist-badge">Artist</span>
             <span v-else class="user-badge">Nutzer</span>
           </div>
         </div>
@@ -127,7 +131,11 @@ async function becomeArtist() {
     <!-- Already an artist -->
     <div v-if="state.artist" class="settings-section card artist-info-card">
       <div class="section-head">
-        <div class="section-icon">🎤</div>
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/>
+          </svg>
+        </div>
         <div>
           <h2>Artist-Profil</h2>
           <p class="section-sub">Du bist bereits als Artist registriert</p>
@@ -153,14 +161,18 @@ async function becomeArtist() {
         </div>
       </div>
       <RouterLink to="/app/studio" class="btn btn-primary" style="margin-top: 16px; display: inline-flex">
-        🎛️ Zum Studio →
+        Zum Studio →
       </RouterLink>
     </div>
 
     <!-- Upgrade to artist -->
     <div v-else class="settings-section card upgrade-card">
       <div class="section-head">
-        <div class="section-icon">⭐</div>
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
         <div>
           <h2>Zum Artist werden</h2>
           <p class="section-sub">Erstelle ein Artist-Profil und veröffentliche eigene Musik</p>
@@ -197,7 +209,7 @@ async function becomeArtist() {
       <p v-if="upgradeError" class="error-msg">{{ upgradeError }}</p>
 
       <button class="btn btn-primary upgrade-btn" @click="becomeArtist" :disabled="upgrading">
-        {{ upgrading ? 'Wird verarbeitet…' : '⭐ Jetzt Artist werden' }}
+        {{ upgrading ? 'Wird verarbeitet…' : 'Jetzt Artist werden' }}
       </button>
     </div>
   </div>
@@ -212,7 +224,7 @@ async function becomeArtist() {
   gap: 14px;
   margin-bottom: 0;
 }
-.section-icon { font-size: 22px; }
+.section-icon { width: 22px; height: 22px; color: var(--accent); flex-shrink: 0; }
 .section-head h2 { font-size: 16px; font-weight: 600; }
 .section-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 

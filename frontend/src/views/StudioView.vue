@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '../api.js'
 import { useAuth } from '../stores/auth.js'
+import CoverImage from '../components/CoverImage.vue'
 
 const router = useRouter()
 const { state, setArtist } = useAuth()
@@ -93,7 +94,7 @@ async function saveAlbum() {
     })
     setArtist(updatedArtist)
     allAlbums.value.push(album)
-    saveMsg.value = 'Album veröffentlicht! 🎉'
+    saveMsg.value = 'Album veröffentlicht!'
     setTimeout(() => {
       showModal.value = false
       form.value      = emptyAlbum()
@@ -121,7 +122,7 @@ function formatDate(d) {
 <template>
   <div>
     <div class="page-header">
-      <h1>🎛️ Mein Studio</h1>
+      <h1>Mein Studio</h1>
       <p>Erstelle und verwalte deine eigene Musik als {{ state.artist?.name }}</p>
     </div>
 
@@ -131,13 +132,19 @@ function formatDate(d) {
 
     <!-- My albums -->
     <div v-if="myAlbums.length === 0" class="empty">
-      <div class="empty-icon">🎵</div>
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+        </svg>
+      </div>
       <p>Noch keine Alben veröffentlicht. Starte mit deinem ersten Album!</p>
     </div>
 
     <div v-else class="grid">
       <div v-for="album in myAlbums" :key="album.id" class="my-album-card">
-        <img :src="album.coverImage || 'https://i.pravatar.cc/200'" :alt="album.title" class="my-cover" />
+        <div class="my-cover">
+          <CoverImage :src="album.coverImage" :title="album.title" />
+        </div>
         <div class="my-info">
           <div class="my-title">{{ album.title }}</div>
           <div class="my-meta">{{ formatDate(album.releaseDate) }} · {{ album.songs?.length || 0 }} Songs</div>
@@ -150,7 +157,9 @@ function formatDate(d) {
       <div class="modal">
         <div class="modal-header">
           <h2>Neues Album erstellen</h2>
-          <button class="modal-close" @click="showModal = false">✕</button>
+          <button class="modal-close" @click="showModal = false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         <!-- Album info -->
@@ -185,7 +194,9 @@ function formatDate(d) {
         <div v-for="(song, i) in form.songs" :key="i" class="song-form">
           <div class="song-form-header">
             <span class="song-num-label"># {{ i + 1 }}</span>
-            <button v-if="form.songs.length > 1" class="btn-remove" @click="removeSong(i)">✕</button>
+            <button v-if="form.songs.length > 1" class="btn-remove" @click="removeSong(i)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -229,7 +240,7 @@ function formatDate(d) {
         <div class="modal-actions">
           <button class="btn btn-ghost" @click="showModal = false">Abbrechen</button>
           <button class="btn btn-primary" @click="saveAlbum" :disabled="saving">
-            {{ saving ? 'Veröffentlichen…' : '🚀 Album veröffentlichen' }}
+            {{ saving ? 'Veröffentlichen…' : 'Album veröffentlichen' }}
           </button>
         </div>
       </div>
@@ -254,8 +265,7 @@ function formatDate(d) {
 .my-cover {
   width: 100%;
   aspect-ratio: 1;
-  object-fit: cover;
-  display: block;
+  overflow: hidden;
 }
 .my-info { padding: 12px; }
 .my-title { font-size: 13px; font-weight: 600; }
@@ -297,10 +307,12 @@ function formatDate(d) {
   border: none;
   color: var(--text-dim);
   cursor: pointer;
-  font-size: 13px;
   padding: 2px 6px;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
 }
+.btn-remove svg { width: 14px; height: 14px; }
 .btn-remove:hover { background: rgba(239,68,68,0.1); color: var(--danger); }
 
 .explicit-toggle {

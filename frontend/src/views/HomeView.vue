@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { api } from '../api.js'
 import { useAuth } from '../stores/auth.js'
+import CoverImage from '../components/CoverImage.vue'
 
 const { state } = useAuth()
 const artists   = ref([])
@@ -39,8 +40,7 @@ function year(dateStr) {
 <template>
   <div>
     <div class="page-header">
-      <h1>Hallo, {{ state.user?.username }} 👋</h1>
-      <p>Deine Musik-Datenbank auf einem Blick</p>
+      <h1>Hallo, {{ state.user?.username }} JAMAN!</h1>
     </div>
 
     <div class="stats-row" v-if="!loading">
@@ -71,7 +71,7 @@ function year(dateStr) {
       <div v-if="loading" class="loading">Laden…</div>
       <div v-else class="grid">
         <div v-for="album in recentAlbums()" :key="album.id" class="album-card">
-          <img :src="album.coverImage" :alt="album.title" class="album-cover" />
+          <CoverImage :src="album.coverImage" :title="album.title" />
           <div class="album-info">
             <div class="album-title">{{ album.title }}</div>
             <div class="album-meta">{{ year(album.releaseDate) }} · {{ album.songs?.length || 0 }} Songs</div>
