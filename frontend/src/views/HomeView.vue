@@ -9,6 +9,7 @@ const artists   = ref([])
 const albums    = ref([])
 const users     = ref([])
 const playlists = ref([])
+const userMap   = ref({})
 const loading   = ref(true)
 
 onMounted(async () => {
@@ -19,8 +20,14 @@ onMounted(async () => {
   albums.value    = al
   users.value     = u
   playlists.value = p
+  userMap.value   = Object.fromEntries(u.map(usr => [usr.id, usr]))
   loading.value   = false
 })
+
+function artistPicture(artist) {
+  if (!artist.userId) return ''
+  return userMap.value[artist.userId]?.profilePicture || ''
+}
 
 function totalSongs() {
   return albums.value.reduce((sum, a) => sum + (a.songs?.length || 0), 0)
@@ -84,7 +91,8 @@ function year(dateStr) {
       <h2 class="section-title">Artists</h2>
       <div v-if="!loading" class="artists-row">
         <div v-for="artist in artists.slice(0, 6)" :key="artist.id" class="artist-chip">
-          <div class="artist-initial">{{ artist.name[0] }}</div>
+          <img v-if="artistPicture(artist)" :src="artistPicture(artist)" :alt="artist.name" class="artist-initial artist-img" />
+          <div v-else class="artist-initial">{{ artist.name[0] }}</div>
           <div class="artist-name">{{ artist.name }}</div>
           <div class="artist-country">{{ artist.country }}</div>
         </div>
@@ -186,6 +194,11 @@ function year(dateStr) {
   font-size: 18px;
   font-weight: 700;
   display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.artist-img {
+  object-fit: cover;
+  background: none;
 }
 .artist-name { font-size: 12px; font-weight: 600; text-align: center; }
 .artist-country { font-size: 11px; color: var(--text-muted); }

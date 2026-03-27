@@ -2,14 +2,22 @@
 import { ref, computed, onMounted } from 'vue'
 import { api } from '../api.js'
 
-const artists = ref([])
-const search  = ref('')
-const loading = ref(true)
+const artists  = ref([])
+const userMap  = ref({})   // userId → user
+const search   = ref('')
+const loading  = ref(true)
 
 onMounted(async () => {
-  artists.value = await api.getArtists()
+  const [a, users] = await Promise.all([api.getArtists(), api.getUsers()])
+  userMap.value = Object.fromEntries(users.map(u => [u.id, u]))
+  artists.value = a
   loading.value = false
 })
+
+function artistPicture(artist) {
+  if (!artist.userId) return ''
+  return userMap.value[artist.userId]?.profilePicture || ''
+}
 
 const filtered = computed(() =>
   artists.value.filter(a =>
@@ -50,7 +58,8 @@ const filtered = computed(() =>
     <div v-else class="grid-wide">
       <div v-for="artist in filtered" :key="artist.id" class="artist-card">
         <div class="artist-header">
-          <div class="initial-avatar">{{ artist.name[0] }}</div>
+          <img v-if="artistPicture(artist)" :src="artistPicture(artist)" :alt="artist.name" class="initial-avatar avatar-img" />
+          <div v-else class="initial-avatar">{{ artist.name[0] }}</div>
           <div>
             <div class="artist-name">{{ artist.name }}</div>
             <div class="artist-meta">{{ artist.country }} · seit {{ artist.debutYear }}</div>
@@ -95,6 +104,10 @@ const filtered = computed(() =>
   font-weight: 700;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+}
+.avatar-img {
+  object-fit: cover;
+  background: none;
 }
 .artist-name { font-size: 15px; font-weight: 600; }
 .artist-meta { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
